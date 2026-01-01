@@ -10,7 +10,7 @@ class ConfigManager {
         'xampp' => [
             'host' => 'localhost',
             'user' => 'root',
-            'pass' => '',
+            'pass' => 'Sipup@2026',
             'name' => 'b2b_billing_system'
         ],
         'production' => [
