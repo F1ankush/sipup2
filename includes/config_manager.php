@@ -7,53 +7,71 @@
 
 class ConfigManager {
     private static $defaultCredentials = [
-        'xampp' => [
+        'localhost' => [
             'host' => 'localhost',
             'user' => 'root',
             'pass' => 'Sipup@2026',
-            'name' => 'b2b_billing_system'
+            'name' => 'b2b_billing_system',
+            'dbname' => 'b2b_billing_system'
         ],
-        'production' => [
+        'hostinger' => [
             'host' => 'localhost',
             'user' => 'u110596290_b22bsystem',
             'pass' => 'Sipup@2026',
-            'name' => 'u110596290_b2bsystem'
+            'name' => 'u110596290_b2bsystem',
+            'dbname' => 'u110596290_b2bsystem'
         ]
     ];
 
+
+
+    
     /**
      * Get database credentials based on current environment
+     * Priority: .db_config file → Hostinger environment → localhost defaults
      */
     public static function getDBCredentials() {
-        // Check if we have a saved override
+        // PRIORITY 1: Check if we have a saved override from .db_config
         $credFile = __DIR__ . '/../.db_config';
         if (file_exists($credFile) && is_readable($credFile)) {
             $saved = json_decode(file_get_contents($credFile), true);
             if ($saved && !empty($saved['password'])) {
+                // Ensure dbname key exists
+                if (!isset($saved['dbname']) && isset($saved['name'])) {
+                    $saved['dbname'] = $saved['name'];
+                }
                 return $saved;
             }
         }
 
-        // Try to detect environment
+        // PRIORITY 2: Try to detect if running on Hostinger
         $env = self::detectEnvironment();
         
-        // Try credentials in order: saved config → detected env → XAMPP default
-        $credentials = self::$defaultCredentials[$env] ?? self::$defaultCredentials['xampp'];
+        // Return credentials based on detected environment
+        $credentials = self::$defaultCredentials[$env] ?? self::$defaultCredentials['localhost'];
+        
+        // Ensure dbname key exists
+        if (!isset($credentials['dbname']) && isset($credentials['name'])) {
+            $credentials['dbname'] = $credentials['name'];
+        }
         
         return $credentials;
     }
 
     /**
-     * Detect if running on XAMPP or production
+     * Detect current hosting environment (localhost or Hostinger)
      */
     private static function detectEnvironment() {
-        // Check various indicators
-        if (strpos($_SERVER['HTTP_HOST'] ?? '', 'localhost') !== false || 
-            strpos($_SERVER['HTTP_HOST'] ?? '', '127.0.0.1') !== false) {
-            return 'xampp';
+        $host = $_SERVER['HTTP_HOST'] ?? '';
+        
+        // Check for localhost/127.0.0.1 (XAMPP/local development)
+        if (strpos($host, 'localhost') !== false || 
+            strpos($host, '127.0.0.1') !== false) {
+            return 'localhost';
         }
         
-        return 'xampp'; // Default to XAMPP for safety
+        // If not localhost, assume Hostinger or other production hosting
+        return 'hostinger';
     }
 
     /**

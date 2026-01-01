@@ -7,7 +7,7 @@ $_db_config = ConfigManager::getDBCredentials();
 define('DB_HOST', $_db_config['host']);
 define('DB_USER', $_db_config['user']);
 define('DB_PASS', $_db_config['pass']);
-define('DB_NAME', $_db_config['name']);
+define('DB_NAME', $_db_config['dbname'] ?? $_db_config['name']);
 
 // Database Connection Pool Settings
 define('DB_POOL_SIZE', 50);              // Connection pool size
@@ -17,9 +17,10 @@ define('DB_READ_TIMEOUT', 30);           // 30 seconds for queries
 define('DB_WRITE_TIMEOUT', 30);          // 30 seconds for writes
 
 // SITE CONFIGURATION
-define('SITE_URL', 'http://localhost/top1/');
+// Domain: paninitech.in
+define('SITE_URL', 'https://paninitech.in/');
 define('SITE_NAME', 'B2B Retailer Platform');
-define('COMPANY_NAME', 'sipup');
+define('COMPANY_NAME', 'Panini Tech');
 define('COMPANY_GST', '27AABCU1234B2Z5');
 define('COMPANY_PHONE', '+91 9876543210');
 define('COMPANY_EMAIL', 'support@retailerplatform.com');
@@ -34,7 +35,7 @@ define('FOOTER_YEAR', date('Y'));
 // ============================================================================
 // CACHING CONFIGURATION - Redis/Memcached Support
 // ============================================================================
-define('CACHE_ENABLED', true);
+define('CACHE_ENABLED', false);           // Disable on shared hosting, enable only if Redis available
 define('CACHE_TYPE', 'file');             // 'file', 'redis', 'memcached'
 define('CACHE_HOST', 'localhost');
 define('CACHE_PORT', 6379);
@@ -54,7 +55,7 @@ define('SESSION_TIMEOUT', 1800);          // 30 minutes
 define('SESSION_STORAGE', 'database');    // 'database', 'redis', 'file'
 define('SESSION_HANDLER', 'user');        // Use custom handler
 define('SESSION_REVALIDATE', 300);        // Revalidate every 5 min
-define('SESSION_SECURE', false);          // Set true for HTTPS
+define('SESSION_SECURE', true);           // Set true for HTTPS (Hostinger has free SSL)
 define('SESSION_HTTP_ONLY', true);        // Prevent JS access
 define('SESSION_SAME_SITE', 'Lax');       // CSRF protection
 
@@ -102,7 +103,7 @@ define('QUEUE_DRIVER', 'file');           // 'file', 'database', 'redis'
 // ============================================================================
 // UPI CONFIGURATION
 // ============================================================================
-define('UPI_MERCHANT_ID', 'YourUPIMerchantID');
+define('UPI_MERCHANT_ID', '9472146511@ibl');
 define('UPI_TIMEOUT', 30);
 
 // ============================================================================
