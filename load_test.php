@@ -9,7 +9,7 @@
  */
 
 class LoadTester {
-    private $baseUrl = 'http://localhost/top1';
+    private $baseUrl = 'https://paninitech.in';
     private $results = [];
     private $totalTime = 0;
     private $successCount = 0;

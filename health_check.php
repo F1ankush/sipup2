@@ -304,7 +304,7 @@ header('Content-Type: text/html; charset=utf-8');
         echo '<ol style="margin-left: 20px; line-height: 1.8; color: #555;">';
         echo '<li>Open XAMPP Control Panel</li>';
         echo '<li>Click "Start" next to MySQL</li>';
-        echo '<li>Refresh your browser: <strong>http://localhost/top1/</strong></li>';
+        echo '<li>Refresh your browser: <strong>https://paninitech.in/</strong></li>';
         echo '<li>Done! Website should load automatically ✅</li>';
         echo '</ol>';
         echo '</div>';
@@ -335,7 +335,7 @@ header('Content-Type: text/html; charset=utf-8');
             echo '<h3 style="color: #e74c3c; margin-bottom: 15px;">⚠️ Some components need attention</h3>';
             echo '<p style="color: #666; margin-bottom: 20px;">Please make sure all critical files are present.</p>';
         }
-        echo '<a href="http://localhost/top1/" class="button">Go to Website</a>';
+        echo '<a href="https://paninitech.in/" class="button">Go to Website</a>';
         echo '<a href="setup_wizard.php" class="button secondary">Configure Database</a>';
         echo '</div>';
 
