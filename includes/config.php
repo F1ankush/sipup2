@@ -1,11 +1,5 @@
 <?php
-// ============================================================================
-// SCALABLE B2B PLATFORM CONFIGURATION - 10K-20K USERS SUPPORT
-// ============================================================================
 
-// DATABASE CONFIGURATION - SMART AUTO-DETECTION
-// System automatically detects correct credentials
-// Override by running: http://localhost/top1/setup_wizard.php
 
 require_once __DIR__ . '/config_manager.php';
 $_db_config = ConfigManager::getDBCredentials();

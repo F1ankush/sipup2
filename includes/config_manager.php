@@ -15,9 +15,9 @@ class ConfigManager {
         ],
         'production' => [
             'host' => 'localhost',
-            'user' => 'b2b_billing_system',
-            'pass' => 'Karan@1903',
-            'name' => 'b2b_billing_system'
+            'user' => 'u110596290_b22bsystem',
+            'pass' => 'Sipup@2026',
+            'name' => 'u110596290_b2bsystem'
         ]
     ];
 
