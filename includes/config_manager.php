@@ -18,8 +18,8 @@ class ConfigManager {
             'host' => 'localhost',
             'user' => 'u110596290_b22bsystem',
             'pass' => 'Sipup@2026',
-            'name' => 'u110596290_b2bsystem',
-            'dbname' => 'u110596290_b2bsystem'
+            'name' => 'u110596290_b22bsystem',
+            'dbname' => 'u110596290_b22bsystem'
         ]
     ];
 
@@ -122,8 +122,8 @@ class ConfigManager {
         if ($env === 'hostinger') {
             // For Hostinger - try credentials from configuration first
             $possibleCombos = [
-                ['localhost', 'u110596290_b2bsystem', 'Sipup@2026', 'u110596290_b2bsystem'],
-                ['localhost', 'u110596290_b2bsystem', '', 'u110596290_b2bsystem'],
+                ['localhost', 'u110596290_b22bsystem', 'Sipup@2026', 'u110596290_b22bsystem'],
+                ['localhost', 'u110596290_b22bsystem', '', 'u110596290_b22bsystem'],
             ];
         } else {
             // For localhost/XAMPP
