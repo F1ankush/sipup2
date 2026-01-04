@@ -363,7 +363,7 @@ function renderUserNavbar() {
     <nav class="navbar">
         <div class="navbar-brand">
             <a href="<?php echo $isLoggedIn ? 'dashboard.php' : '../index.php'; ?>" style="display: flex; align-items: center; text-decoration: none;">
-                <img src="<?php echo $isLoggedIn ? 'assets/images/logo1.JPG' : '../assets/images/logo1.JPG'; ?>" alt="Logo" style="height: 40px;">
+                <img src="<?php echo $isLoggedIn ? '../assets/images/logo1.JPG' : '../assets/images/logo1.JPG'; ?>" alt="Logo" style="height: 40px;">
             </a>
         </div>
         
@@ -371,6 +371,17 @@ function renderUserNavbar() {
             <?php if ($isLoggedIn): ?>
                 <li><a href="dashboard.php">Dashboard</a></li>
                 <li><a href="products.php">Products</a></li>
+                <li><a href="cart.php" style="position: relative;">
+                    Cart
+                    <?php 
+                        $cartCount = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
+                        if ($cartCount > 0): 
+                    ?>
+                        <span style="position: absolute; top: -8px; right: -12px; background-color: var(--danger-color); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: bold;">
+                            <?php echo $cartCount; ?>
+                        </span>
+                    <?php endif; ?>
+                </a></li>
                 <li><a href="orders.php">Orders</a></li>
                 <li><a href="bills.php">Bills</a></li>
                 <li class="navbar-button-item"><a href="logout.php" class="btn btn-secondary btn-capsule">Logout</a></li>
@@ -386,6 +397,17 @@ function renderUserNavbar() {
         
         <div class="navbar-buttons">
             <?php if ($isLoggedIn): ?>
+                <a href="cart.php" class="btn btn-primary btn-capsule" style="position: relative; margin-right: 0.5rem;">
+                    🛒 Cart
+                    <?php 
+                        $cartCount = isset($_SESSION['cart']) ? count($_SESSION['cart']) : 0;
+                        if ($cartCount > 0): 
+                    ?>
+                        <span style="position: absolute; top: -8px; right: -5px; background-color: var(--danger-color); color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: bold;">
+                            <?php echo $cartCount; ?>
+                        </span>
+                    <?php endif; ?>
+                </a>
                 <span style="margin-right: 1rem;">Welcome, <?php echo htmlspecialchars($user['username']); ?></span>
                 <a href="logout.php" class="btn btn-secondary btn-capsule">Logout</a>
             <?php else: ?>
