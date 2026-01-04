@@ -48,12 +48,14 @@
             margin-bottom: 20px;
         }
         .status.error {
-            background: #ffe0e0;
+            background: #ffebee;
             border-left-color: #e74c3c;
+            color: #c0392b;
         }
         .status.success {
-            background: #e0ffe0;
+            background: #e8f5e9;
             border-left-color: #27ae60;
+            color: #27ae60;
         }
         .form-group {
             margin-bottom: 20px;
@@ -62,12 +64,12 @@
             display: block;
             margin-bottom: 8px;
             color: #333;
-            font-weight: 500;
+            font-weight: 600;
             font-size: 14px;
         }
         input {
             width: 100%;
-            padding: 12px;
+            padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
             font-size: 14px;
@@ -77,6 +79,11 @@
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        .hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
         }
         .button-group {
             display: flex;
@@ -106,11 +113,6 @@
         }
         .btn-secondary:hover {
             background: #e0e0e0;
-        }
-        .hint {
-            font-size: 12px;
-            color: #999;
-            margin-top: 5px;
         }
         .loading {
             display: none;
@@ -142,6 +144,33 @@
             color: #555;
             line-height: 1.6;
         }
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: #999;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -153,40 +182,64 @@
 
         <div id="status" class="status" style="display: none;"></div>
 
-        <div class="info-box">
-            <strong>ℹ️ Configuration Instructions:</strong><br>
-            <strong style="color: #333; margin-top: 10px; display: block;">For XAMPP (Local):</strong>
-            Host: <code>localhost</code> | User: <code>root</code> | Password: (empty) | Database: <code>b2b_billing_system</code>
-            <br><br>
-            <strong style="color: #333; margin-top: 10px; display: block;">For Hostinger:</strong>
-            Host: <code>localhost</code> | User: <code>u110596290_b2bsystem</code> | Password: (check cPanel) | Database: <code>u110596290_b2bsystem</code>
-            <br><br>
-            <small style="color: #999;">Get database credentials from your hosting control panel → Databases section</small>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('hostinger')">🌐 Hostinger</button>
+            <button class="tab-btn" onclick="switchTab('xampp')">💻 XAMPP</button>
+            <button class="tab-btn" onclick="switchTab('custom')">⚙️ Custom</button>
+        </div>
+
+        <div id="hostinger-tab" class="tab-content active">
+            <div class="info-box">
+                <strong>Hostinger Configuration</strong><br>
+                Database credentials are automatically detected from Hostinger defaults.
+                <br><br>
+                <strong>If you changed your password:</strong><br>
+                1. Log in to Hostinger cPanel<br>
+                2. Go to Databases section<br>
+                3. Find your password<br>
+                4. Enter it below
+            </div>
+        </div>
+
+        <div id="xampp-tab" class="tab-content">
+            <div class="info-box">
+                <strong>XAMPP Configuration</strong><br>
+                These are standard XAMPP defaults. 
+                Change them if you configured XAMPP differently.
+            </div>
+        </div>
+
+        <div id="custom-tab" class="tab-content">
+            <div class="info-box">
+                <strong>Custom Configuration</strong><br>
+                Enter your database credentials manually.
+                All fields must be filled correctly for connection to work.
+            </div>
         </div>
 
         <form id="setupForm">
             <div class="form-group">
                 <label for="host">Database Host</label>
                 <input type="text" id="host" name="host" value="localhost" required>
-                <div class="hint">Usually 'localhost' for XAMPP</div>
+                <div class="hint">Usually 'localhost' for most hosting</div>
             </div>
 
             <div class="form-group">
                 <label for="user">Database User</label>
-                <input type="text" id="user" name="user" value="root" required>
-                <div class="hint">Default is 'root' in XAMPP</div>
+                <input type="text" id="user" name="user" value="u110596290_b2bsystem" required>
+                <div class="hint" id="user-hint">Hostinger default: u110596290_b2bsystem</div>
             </div>
 
             <div class="form-group">
                 <label for="pass">Database Password</label>
-                <input type="password" id="pass" name="pass" value="" placeholder="Leave empty for XAMPP default">
-                <div class="hint">Leave empty if no password is set</div>
+                <input type="password" id="pass" name="pass" value="" placeholder="Enter your database password">
+                <div class="hint">Check your hosting control panel for this</div>
             </div>
 
             <div class="form-group">
                 <label for="dbname">Database Name</label>
-                <input type="text" id="dbname" name="dbname" value="b2b_billing_system" required>
-                <div class="hint">Database must already exist</div>
+                <input type="text" id="dbname" name="dbname" value="u110596290_b2bsystem" required>
+                <div class="hint" id="dbname-hint">Hostinger default: u110596290_b2bsystem</div>
             </div>
 
             <div class="button-group">
@@ -206,6 +259,33 @@
     </div>
 
     <script>
+        function switchTab(tab) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tab + '-tab').classList.add('active');
+            event.target.classList.add('active');
+
+            // Update form hints
+            if (tab === 'hostinger') {
+                document.getElementById('user').value = 'u110596290_b22bsystem';
+                document.getElementById('dbname').value = 'u110596290_b2bsystem';
+                document.getElementById('user-hint').textContent = 'Hostinger default: u110596290_b2bsystem';
+                document.getElementById('dbname-hint').textContent = 'Hostinger default: u110596290_b2bsystem';
+            } else if (tab === 'xampp') {
+                document.getElementById('user').value = 'root';
+                document.getElementById('dbname').value = 'b2b_billing_system';
+                document.getElementById('user-hint').textContent = 'XAMPP default: root';
+                document.getElementById('dbname-hint').textContent = 'XAMPP default: b2b_billing_system';
+            }
+        }
+
         function showStatus(message, isError = false) {
             const status = document.getElementById('status');
             status.textContent = message;

@@ -1,0 +1,61 @@
+# ⚡ QUICK ACTION GUIDE - Fix "Database Configuration" Error
+
+## The Problem
+You see: **"Database Configuration Required - Please visit Setup Wizard..."**
+
+## The Cause
+Database username had a typo: `b22b` instead of `b2b`
+
+## The Fix (2 Steps)
+
+### Step 1: Upload Fixed Files (5 min)
+```
+Upload these 3 files to your Hostinger public_html/:
+1. includes/config_manager.php  (username fixed)
+2. includes/db.php              (better error messages)
+3. setup_wizard.php             (pre-fills values)
+```
+
+### Step 2: Configure Database (5 min)
+```
+1. Visit: https://yourdomain.com/setup_wizard.php
+2. Form is pre-filled with Hostinger defaults
+3. Enter database PASSWORD from cPanel
+4. Click "Test Connection" → ✅ Success
+5. Click "Save & Continue"
+6. Done! Visit homepage
+```
+
+---
+
+## 📋 Database Info Needed
+
+Get from **Hostinger cPanel → Databases**:
+- **Username**: `u110596290_b2bsystem`
+- **Database**: `u110596290_b2bsystem`
+- **Password**: (Find in cPanel) ← You need to enter this
+
+---
+
+## ✅ Verify Success
+
+After configuration:
+- [ ] Homepage loads: `https://yourdomain.com/`
+- [ ] No "Database Configuration" error
+- [ ] Navigation works
+- [ ] error_log.txt is clean
+
+---
+
+## 🚨 If Still Seeing Error
+
+1. **Check password**: Verify password in cPanel is correct
+2. **Clear cache**: Ctrl+Shift+Delete in browser
+3. **Try again**: Visit setup_wizard.php and re-enter credentials
+4. **Check logs**: Look in error_log.txt for specific error
+
+---
+
+**Total Time: ~10 minutes**
+
+**Status: ✅ Everything Fixed!**

@@ -113,15 +113,31 @@ class ConfigManager {
      * Try multiple credential combinations
      */
     public static function autoDetectCredentials() {
-        $possibleCombos = [
-            // Try empty password first (XAMPP default)
-            ['localhost', 'root', '', 'b2b_billing_system'],
-            // Try with password
-            ['localhost', 'root', 'Karan@1903', 'b2b_billing_system'],
-            // Try b2b_billing_system user
-            ['localhost', 'b2b_billing_system', '', 'b2b_billing_system'],
-            ['localhost', 'b2b_billing_system', 'Karan@1903', 'b2b_billing_system'],
-        ];
+        // Detect environment
+        $env = self::detectEnvironment();
+        
+        // Build list based on environment
+        $possibleCombos = [];
+        
+        if ($env === 'hostinger') {
+            // For Hostinger - try credentials from configuration first
+            $possibleCombos = [
+                ['localhost', 'u110596290_b2bsystem', 'Sipup@2026', 'u110596290_b2bsystem'],
+                ['localhost', 'u110596290_b2bsystem', '', 'u110596290_b2bsystem'],
+            ];
+        } else {
+            // For localhost/XAMPP
+            $possibleCombos = [
+                // Try empty password first (XAMPP default)
+                ['localhost', 'root', '', 'b2b_billing_system'],
+                // Try with password
+                ['localhost', 'root', 'Sipup@2026', 'b2b_billing_system'],
+                ['localhost', 'root', 'Karan@1903', 'b2b_billing_system'],
+                // Try b2b_billing_system user
+                ['localhost', 'b2b_billing_system', '', 'b2b_billing_system'],
+                ['localhost', 'b2b_billing_system', 'Karan@1903', 'b2b_billing_system'],
+            ];
+        }
 
         foreach ($possibleCombos as $creds) {
             if (self::testConnection($creds[0], $creds[1], $creds[2], $creds[3])) {
@@ -129,7 +145,8 @@ class ConfigManager {
                     'host' => $creds[0],
                     'user' => $creds[1],
                     'pass' => $creds[2],
-                    'name' => $creds[3]
+                    'name' => $creds[3],
+                    'dbname' => $creds[3]
                 ];
             }
         }
