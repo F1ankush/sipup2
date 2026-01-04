@@ -1,8 +1,99 @@
 <?php
 /**
  * System Health Check
- * Verify that intelligent configuration system is working
+ * Diagnoses database and system configuration issues
  */
+
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+$checks = [];
+
+// Check 1: .db_config file
+$configFile = __DIR__ . '/.db_config';
+$checks['config_file'] = [
+    'name' => '.db_config File',
+    'status' => file_exists($configFile) ? 'OK' : 'MISSING',
+    'details' => file_exists($configFile) ? 'Configuration file exists' : 'Configuration file not found - run setup_database.php'
+];
+
+// Check 2: Config file content
+if (file_exists($configFile)) {
+    $config = json_decode(file_get_contents($configFile), true);
+    $checks['config_content'] = [
+        'name' => 'Config File Content',
+        'status' => ($config && !empty($config['password'])) ? 'OK' : 'INVALID',
+        'details' => ($config && !empty($config['password'])) ? 'Configuration contains required fields' : 'Configuration is invalid or missing password'
+    ];
+    
+    // Check 3: Database connection
+    if ($config) {
+        $mysqli = @new mysqli(
+            $config['host'] ?? 'localhost',
+            $config['user'] ?? '',
+            $config['password'] ?? '',
+            $config['dbname'] ?? ''
+        );
+        
+        if ($mysqli->connect_error) {
+            $checks['database_connection'] = [
+                'name' => 'Database Connection',
+                'status' => 'FAILED',
+                'details' => 'Error: ' . $mysqli->connect_error,
+                'host' => $config['host'] ?? 'N/A',
+                'database' => $config['dbname'] ?? 'N/A'
+            ];
+        } else {
+            $checks['database_connection'] = [
+                'name' => 'Database Connection',
+                'status' => 'OK',
+                'details' => 'Successfully connected to database'
+            ];
+            
+            // Check 4: Database tables
+            $result = $mysqli->query("SHOW TABLES");
+            if ($result) {
+                $tables = [];
+                while ($row = $result->fetch_row()) {
+                    $tables[] = $row[0];
+                }
+                
+                $requiredTables = ['admins', 'users', 'products', 'orders', 'order_items', 'payments'];
+                $missingTables = array_diff($requiredTables, $tables);
+                
+                $checks['database_tables'] = [
+                    'name' => 'Database Tables',
+                    'status' => empty($missingTables) ? 'OK' : 'INCOMPLETE',
+                    'details' => 'Found ' . count($tables) . ' tables',
+                    'tables' => $tables,
+                    'missing' => $missingTables
+                ];
+            }
+            
+            $mysqli->close();
+        }
+    }
+} else {
+    $checks['config_content'] = [
+        'name' => 'Config File Content',
+        'status' => 'MISSING',
+        'details' => 'Cannot check - config file not found'
+    ];
+}
+
+// Check 5: PHP version
+$checks['php_version'] = [
+    'name' => 'PHP Version',
+    'status' => version_compare(PHP_VERSION, '7.0', '>=') ? 'OK' : 'LOW',
+    'details' => 'PHP ' . PHP_VERSION . ' installed'
+];
+
+// Check 6: MySQLi extension
+$checks['mysqli'] = [
+    'name' => 'MySQLi Extension',
+    'status' => extension_loaded('mysqli') ? 'OK' : 'MISSING',
+    'details' => extension_loaded('mysqli') ? 'MySQLi extension is available' : 'MySQLi extension not loaded'
+];
 
 header('Content-Type: text/html; charset=utf-8');
 ?>
@@ -253,70 +344,37 @@ header('Content-Type: text/html; charset=utf-8');
             $class = $result['pass'] ? 'pass' : ($result['warning'] ?? false ? 'warning' : 'fail');
             $icon = $result['pass'] ? '✅' : '❌';
             if ($result['warning'] ?? false) $icon = '⚠️';
-            
             echo '<div class="check-item ' . $class . '">';
-            echo '<div class="check-label"><span class="icon">' . $icon . '</span>' . $name . '</div>';
+            echo '<div class="check-label"><span class="icon">' . $icon . '</span><strong>' . $name . '</strong></div>';
             echo '<div class="check-detail">' . $result['detail'] . '</div>';
             echo '</div>';
         }
-
-        echo '</div>';
-
-        // Display database credentials status
-        echo '<div class="section"><div class="section-title">Database Configuration Status</div>';
-
-        if ($configMgrLoads) {
-            try {
-                $creds = ConfigManager::getDBCredentials();
-                echo '<div class="check-item pass">';
-                echo '<div class="check-label"><span class="icon">✅</span>Active Credentials</div>';
-                echo '<div class="check-detail">Host: ' . htmlspecialchars($creds['host']) . '<br>';
-                echo 'User: ' . htmlspecialchars($creds['user']) . '<br>';
-                echo 'Database: ' . htmlspecialchars($creds['name']) . '</div>';
-                echo '</div>';
-
-                // Try to test connection
-                if (ConfigManager::testConnection($creds['host'], $creds['user'], $creds['pass'], $creds['name'])) {
-                    echo '<div class="check-item pass">';
-                    echo '<div class="check-label"><span class="icon">✅</span>Database Connection Test</div>';
-                    echo '<div class="check-detail">Successfully connected to database!</div>';
-                    echo '</div>';
-                } else {
-                    echo '<div class="check-item fail">';
-                    echo '<div class="check-label"><span class="icon">❌</span>Database Connection Test</div>';
-                    echo '<div class="check-detail">Could not connect with current credentials. System will auto-detect or show setup wizard.</div>';
-                    echo '</div>';
-                }
-            } catch (Exception $e) {
-                echo '<div class="check-item warning">';
-                echo '<div class="check-label"><span class="icon">⚠️</span>Configuration Check</div>';
-                echo '<div class="check-detail">Unable to retrieve configuration: ' . htmlspecialchars($e->getMessage()) . '</div>';
-                echo '</div>';
-            }
-        }
-
         echo '</div>';
 
         // Display next steps
-        echo '<div class="section"><div class="section-title">What to do now</div>';
-        echo '<div style="background: #f9f9f9; padding: 15px; border-radius: 5px;">';
-        echo '<h3 style="margin-bottom: 10px; color: #333;">✨ Quick Start (2 minutes)</h3>';
-        echo '<ol style="margin-left: 20px; line-height: 1.8; color: #555;">';
-        echo '<li>Open XAMPP Control Panel</li>';
-        echo '<li>Click "Start" next to MySQL</li>';
-        echo '<li>Refresh your browser: <strong>https://paninitech.in/</strong></li>';
-        echo '<li>Done! Website should load automatically ✅</li>';
-        echo '</ol>';
-        echo '</div>';
+        echo '<div class="section">';
+        echo '<div class="section-title">🚀 Next Steps</div>';
 
-        echo '<h3 style="margin-top: 20px; margin-bottom: 10px; color: #333;">If automatic doesn\'t work:</h3>';
-        echo '<div style="background: #f9f9f9; padding: 15px; border-radius: 5px;">';
-        echo '<a href="setup_wizard.php" class="button">Open Setup Wizard</a>';
-        echo '</div>';
+        if ($allPass) {
+            echo '<p style="color: #333; line-height: 1.6;">';
+            echo 'Your system is fully configured! You can now:<br>';
+            echo '• Access the application at <a href="index.php">Home Page</a><br>';
+            echo '• Configure database credentials at <a href="setup_database.php">Database Setup</a><br>';
+            echo '• Check application status at <a href="setup_wizard.php">Setup Wizard</a><br>';
+            echo '</p>';
+        } else {
+            echo '<p style="color: #c0392b; line-height: 1.6; background: #ffe0e0; padding: 15px; border-radius: 5px;">';
+            echo '<strong>⚠️ Critical Issues Found</strong><br>';
+            echo 'Please ensure all critical files are present and PHP version is 7.0 or higher. ';
+            echo 'Contact your hosting provider if components are missing.';
+            echo '</p>';
+        }
 
         echo '</div>';
-
-        // Technical details
+        ?>
+    </div>
+</body>
+</html>        // Technical details
         echo '<div class="section"><div class="section-title">How It Works</div>';
         echo '<div style="background: #f9f9f9; padding: 15px; border-radius: 5px; font-size: 13px; color: #555; line-height: 1.8;">';
         echo '<p><strong>1. Smart Detection:</strong> System tries multiple credential combinations automatically</p>';

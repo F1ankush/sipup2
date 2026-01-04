@@ -1,0 +1,88 @@
+# 🚀 HTTP 500 Error - QUICK FIX (5 MINUTES)
+
+## The Problem
+Your website shows HTTP 500 error on paninitech.in because the database connection isn't configured for Hostinger.
+
+## The Solution (Pick ONE)
+
+### ✅ **OPTION A: Web Wizard (Easiest)**
+1. Go to: **https://paninitech.in/setup_database.php**
+2. Get credentials from Hostinger Control Panel → MySQL Databases
+3. Enter: Host, Username, Password, Database Name
+4. Click "Test Connection" → "Save Configuration"
+5. Done! Your site should work now.
+
+### ✅ **OPTION B: Auto-Detection**
+System automatically detects and uses correct credentials. Just upload the database schema:
+
+1. Log into Hostinger Control Panel
+2. Go to: **Hosting → MySQL Databases**
+3. Click your database → **phpMyAdmin**
+4. Click: **Import**
+5. Upload: `database_schema.sql` file
+6. Click: **Go**
+7. Your site should work now!
+
+---
+
+## 📍 Required Hostinger Credentials
+
+Get these from Hostinger Control Panel → Hosting → MySQL Databases:
+
+```
+Database Name: u110596290_b2bsystem
+Username: u110596290_b22bsystem
+Password: [Your password - check in Hostinger]
+Host: localhost
+```
+
+---
+
+## ✔️ Verify It Worked
+
+### Check 1: Web Works
+- Visit: https://paninitech.in/
+- Should load without errors
+
+### Check 2: Login Works
+- Try logging in with retailer account
+- Should show dashboard if successful
+
+### Check 3: System Health
+- Visit: https://paninitech.in/health_check.php
+- Should show ✅ for all items
+
+---
+
+## 🆘 If Still Not Working
+
+**99% of the time, it's one of these:**
+
+1. **Database doesn't exist**
+   - Go to Hostinger → MySQL Databases
+   - Create database named `b2bsystem`
+
+2. **Database is empty (no tables)**
+   - Upload `database_schema.sql` via phpMyAdmin
+   - This creates all required tables
+
+3. **Wrong credentials in .db_config**
+   - Delete `.db_config` file
+   - Go to setup_database.php and re-enter credentials
+   - Re-test the connection
+
+4. **File permissions**
+   - .db_config should have 644 permissions
+   - uploads/ folder should have 755 permissions
+
+---
+
+## 📚 Full Documentation
+
+For detailed help, see: **HTTP_500_ERROR_FIX_GUIDE_2024.md**
+
+---
+
+**Status:** Critical Issue
+**Priority:** Fix Immediately
+**Estimated Fix Time:** 5-10 minutes
