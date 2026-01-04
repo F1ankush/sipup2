@@ -49,28 +49,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         global $db;
         
-        // Start transaction
-        $db->begin_transaction();
-        
         try {
             // Create order
             $stmt = $db->prepare("INSERT INTO orders (user_id, order_number, total_amount, payment_method, status) VALUES (?, ?, ?, ?, 'pending_payment')");
-            $stmt->bind_param("isds", $_SESSION['user_id'], $order_number, $final_total, $payment_method);
+            $stmt->bind_param("issd", $_SESSION['user_id'], $order_number, $final_total, $payment_method);
             
             if (!$stmt->execute()) {
-                throw new Exception("Failed to create order");
+                throw new Exception("Failed to create order: " . $stmt->error);
             }
             
-            $order_id = $db->insert_id;
+            $order_id = $db->getLastId();
             
             // Add order items
             foreach ($cart as $item) {
                 $stmt = $db->prepare("INSERT INTO order_items (order_id, product_id, quantity, unit_price, total_price) VALUES (?, ?, ?, ?, ?)");
                 $item_total = $item['price'] * $item['quantity'];
-                $stmt->bind_param("iiidd", $order_id, $item['product_id'], $item['quantity'], $item['price'], $item_total);
+                $stmt->bind_param("iiddd", $order_id, $item['product_id'], $item['quantity'], $item['price'], $item_total);
                 
                 if (!$stmt->execute()) {
-                    throw new Exception("Failed to add order items");
+                    throw new Exception("Failed to add order items: " . $stmt->error);
                 }
             }
             
@@ -86,14 +83,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             
             $stmt = $db->prepare("INSERT INTO payments (order_id, payment_method, upi_id, qr_code_url, amount, status) VALUES (?, ?, ?, ?, ?, 'pending')");
-            $stmt->bind_param("isssd", $order_id, $payment_method, $upi_id, $qr_code_url, $final_total);
+            $stmt->bind_param("isdsd", $order_id, $payment_method, $upi_id, $qr_code_url, $final_total);
             
             if (!$stmt->execute()) {
-                throw new Exception("Failed to create payment record");
+                throw new Exception("Failed to create payment record: " . $stmt->error);
             }
-            
-            // Commit transaction
-            $db->commit();
             
             // Clear cart
             $_SESSION['cart'] = [];
@@ -109,8 +103,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit();
             
         } catch (Exception $e) {
-            // Rollback transaction
-            $db->rollback();
             $error_message = $e->getMessage();
         }
     }

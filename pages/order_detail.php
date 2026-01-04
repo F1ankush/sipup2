@@ -15,6 +15,7 @@ if (!validateSession($_SESSION['user_id'])) {
 }
 
 $user = getUserData($_SESSION['user_id']);
+$csrf_token = generateCSRFToken();
 
 // Get order ID
 $orderId = intval($_GET['id'] ?? 0);
