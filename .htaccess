@@ -1,7 +1,8 @@
 # B2B Retailer Platform - Apache Configuration
+# Deployed on: paninitech.in
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /top1/
+    RewriteBase /
     
     # Prevent direct access to sensitive folders
     RewriteRule ^(includes|uploads/payment_proofs|uploads/bills)(/|$) - [F]
