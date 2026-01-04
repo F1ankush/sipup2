@@ -78,8 +78,12 @@ $orders = getOrders($_SESSION['user_id']);
                     <?php foreach ($products as $product): ?>
                         <div class="col-4">
                             <div class="product-card">
-                                <div class="product-image" style="background-color: var(--light-gray); display: flex; align-items: center; justify-content: center; color: var(--medium-gray); font-size: 3rem;">
-                                    📦
+                                <div class="product-image" style="background-color: var(--light-gray); display: flex; align-items: center; justify-content: center; color: var(--medium-gray); font-size: 3rem; min-height: 200px; overflow: hidden;">
+                                    <?php if (!empty($product['image_path']) && file_exists('../' . $product['image_path'])): ?>
+                                        <img src="../<?php echo htmlspecialchars($product['image_path']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" style="width: 100%; height: 100%; object-fit: cover;">
+                                    <?php else: ?>
+                                        📦
+                                    <?php endif; ?>
                                 </div>
                                 <div class="product-details">
                                     <h3 class="product-name"><?php echo htmlspecialchars($product['name']); ?></h3>
