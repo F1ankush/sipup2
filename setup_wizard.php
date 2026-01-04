@@ -238,8 +238,8 @@
 
             <div class="form-group">
                 <label for="dbname">Database Name</label>
-                <input type="text" id="dbname" name="dbname" value="u110596290_b22bsystem" required>
-                <div class="hint" id="dbname-hint">Hostinger default: u110596290_b22bsystem</div>
+                <input type="text" id="dbname" name="dbname" value="u110596290_b2bsystem" required>
+                <div class="hint" id="dbname-hint">Hostinger default: u110596290_b2bsystem</div>
             </div>
 
             <div class="button-group">
@@ -275,9 +275,9 @@
             // Update form hints
             if (tab === 'hostinger') {
                 document.getElementById('user').value = 'u110596290_b22bsystem';
-                document.getElementById('dbname').value = 'u110596290_b22bsystem';
+                document.getElementById('dbname').value = 'u110596290_b2bsystem';
                 document.getElementById('user-hint').textContent = 'Hostinger default: u110596290_b22bsystem';
-                document.getElementById('dbname-hint').textContent = 'Hostinger default: u110596290_b22bsystem';
+                document.getElementById('dbname-hint').textContent = 'Hostinger default: u110596290_b2bsystem';
             } else if (tab === 'xampp') {
                 document.getElementById('user').value = 'root';
                 document.getElementById('dbname').value = 'b2b_billing_system';
