@@ -1,5 +1,8 @@
 <?php
-
+// Start session - MUST be before any output
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 
 require_once __DIR__ . '/config_manager.php';
 $_db_config = ConfigManager::getDBCredentials();
@@ -126,23 +129,23 @@ define('LOG_PERFORMANCE', true);
 // OPTIMIZATION SETTINGS
 // ============================================================================
 
-// Memory and execution
-ini_set('memory_limit', '512M');          // Increased from default
-ini_set('max_execution_time', 300);       // 5 minutes
-ini_set('default_socket_timeout', 60);
+// Memory and execution - Use @ to suppress errors on restricted hosts
+@ini_set('memory_limit', '512M');          // Increased from default
+@ini_set('max_execution_time', 300);       // 5 minutes
+@ini_set('default_socket_timeout', 60);
 
 // Database optimization
-ini_set('mysqli.max_connections', 100);
-ini_set('mysqli.max_persistent', 50);
-ini_set('mysqli.default_port', 3306);
+@ini_set('mysqli.max_connections', 100);
+@ini_set('mysqli.max_persistent', 50);
+@ini_set('mysqli.default_port', 3306);
 
-// Output buffering
-ini_set('output_buffering', 'on');
-ini_set('output_handler', 'gzip');
+// Output buffering - Be careful with Hostinger
+@ini_set('output_buffering', 'on');
+//@ini_set('output_handler', 'gzip');     // Disabled - may conflict with Hostinger's compression
 
-// Compression
-ini_set('zlib.output_compression', 'on');
-ini_set('zlib.output_compression_level', 6);
+// Compression - Hostinger may handle this separately
+@ini_set('zlib.output_compression', 'on');
+@ini_set('zlib.output_compression_level', 6);
 
 // ============================================================================
 // MONITORING & METRICS
@@ -158,13 +161,13 @@ define('HEALTH_CHECK_INTERVAL', 300);     // Every 5 minutes
 // ============================================================================
 
 // Configure session settings for distributed systems
-ini_set('session.gc_maxlifetime', 1800);
-ini_set('session.gc_probability', 1);
-ini_set('session.gc_divisor', 100);
-ini_set('session.name', 'SIPUP_SESSIONID');
-ini_set('session.cookie_secure', false);  // Set true for HTTPS
-ini_set('session.cookie_httponly', true);
-ini_set('session.cookie_samesite', 'Lax');
+@ini_set('session.gc_maxlifetime', 1800);
+@ini_set('session.gc_probability', 1);
+@ini_set('session.gc_divisor', 100);
+@ini_set('session.name', 'SIPUP_SESSIONID');
+@ini_set('session.cookie_secure', false);  // Set true for HTTPS
+@ini_set('session.cookie_httponly', true);
+@ini_set('session.cookie_samesite', 'Lax');
 
 if (session_status() === PHP_SESSION_NONE) {
     session_start();

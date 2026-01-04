@@ -154,11 +154,14 @@
         <div id="status" class="status" style="display: none;"></div>
 
         <div class="info-box">
-            <strong>ℹ️ Default XAMPP Configuration:</strong><br>
-            Host: <code>localhost</code><br>
-            User: <code>root</code><br>
-            Password: (leave empty)<br>
-            Database: <code>b2b_billing_system</code>
+            <strong>ℹ️ Configuration Instructions:</strong><br>
+            <strong style="color: #333; margin-top: 10px; display: block;">For XAMPP (Local):</strong>
+            Host: <code>localhost</code> | User: <code>root</code> | Password: (empty) | Database: <code>b2b_billing_system</code>
+            <br><br>
+            <strong style="color: #333; margin-top: 10px; display: block;">For Hostinger:</strong>
+            Host: <code>localhost</code> | User: <code>u110596290_b2bsystem</code> | Password: (check cPanel) | Database: <code>u110596290_b2bsystem</code>
+            <br><br>
+            <small style="color: #999;">Get database credentials from your hosting control panel → Databases section</small>
         </div>
 
         <form id="setupForm">

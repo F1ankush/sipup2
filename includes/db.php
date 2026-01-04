@@ -8,17 +8,22 @@ class Database {
     private $lastError = '';
     
     public function __construct() {
-        // Try configured credentials first
-        if (!$this->tryConnection(DB_HOST, DB_USER, DB_PASS, DB_NAME)) {
-            // If that fails, try auto-detection
-            $detected = ConfigManager::autoDetectCredentials();
-            if ($detected && $this->tryConnection($detected['host'], $detected['user'], $detected['pass'], $detected['name'])) {
-                // Save the working credentials
-                ConfigManager::saveCredentials($detected['host'], $detected['user'], $detected['pass'], $detected['name']);
-            } else {
-                // All attempts failed, redirect to setup wizard
-                $this->redirectToSetup();
+        try {
+            // Try configured credentials first
+            if (!$this->tryConnection(DB_HOST, DB_USER, DB_PASS, DB_NAME)) {
+                // If that fails, try auto-detection
+                $detected = ConfigManager::autoDetectCredentials();
+                if ($detected && $this->tryConnection($detected['host'], $detected['user'], $detected['pass'], $detected['dbname'] ?? $detected['name'])) {
+                    // Save the working credentials
+                    ConfigManager::saveCredentials($detected['host'], $detected['user'], $detected['pass'], $detected['dbname'] ?? $detected['name']);
+                } else {
+                    // All attempts failed, redirect to setup wizard
+                    $this->redirectToSetup();
+                }
             }
+        } catch (Exception $e) {
+            error_log("Database Constructor Error: " . $e->getMessage());
+            $this->redirectToSetup();
         }
     }
     
@@ -48,14 +53,19 @@ class Database {
     private function redirectToSetup() {
         error_log("Database connection failed: " . $this->lastError . " - Redirecting to setup wizard");
         
+        // Get the base URL dynamically
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        $baseUrl = $protocol . $_SERVER['HTTP_HOST'];
+        $setupPath = '/setup_wizard.php'; // Relative path from root
+        
         // Check if we're already on setup page to prevent redirect loop
         if (strpos($_SERVER['REQUEST_URI'] ?? '', 'setup_wizard.php') === false && 
             strpos($_SERVER['REQUEST_URI'] ?? '', 'config_api.php') === false) {
-            header('Location: /top1/setup_wizard.php', true, 302);
+            header('Location: ' . $baseUrl . $setupPath, true, 302);
         }
         
         http_response_code(500);
-        die("<h1>Database Configuration Required</h1><p>Please visit <a href='/top1/setup_wizard.php'>Setup Wizard</a> to configure your database connection.</p>");
+        die("<h1>Database Configuration Required</h1><p>Please visit <a href='" . $baseUrl . $setupPath . "'>Setup Wizard</a> to configure your database connection.</p>");
     }
     
     public function getConnection() {
