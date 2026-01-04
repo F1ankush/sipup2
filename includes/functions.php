@@ -363,7 +363,7 @@ function renderUserNavbar() {
     <nav class="navbar">
         <div class="navbar-brand">
             <a href="<?php echo $isLoggedIn ? 'dashboard.php' : '../index.php'; ?>" style="display: flex; align-items: center; text-decoration: none;">
-                <img src="<?php echo $isLoggedIn ? 'assets/images/logo1.jpg' : '../assets/images/logo1.jpg'; ?>" alt="Logo" style="height: 40px;">
+                <img src="<?php echo $isLoggedIn ? 'assets/images/logo1.JPG' : '../assets/images/logo1.JPG'; ?>" alt="Logo" style="height: 40px;">
             </a>
         </div>
         
@@ -411,7 +411,7 @@ function renderAdminNavbar() {
     <nav class="navbar">
         <div class="navbar-brand">
             <a href="<?php echo $isAdminLoggedIn ? 'dashboard.php' : '../index.php'; ?>" style="display: flex; align-items: center; text-decoration: none;">
-                <img src="../assets/images/logo1.jpg" alt="Logo" style="height: 40px;">
+                <img src="../assets/images/logo1.JPG" alt="Logo" style="height: 40px;">
             </a>
         </div>
         
@@ -452,7 +452,7 @@ function renderFooter() {
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-section">
-                <img src="../assets/images/logo1.jpg" alt="<?php echo FOOTER_COMPANY; ?>" class="footer-logo">
+                <img src="../assets/images/logo1.JPG" alt="<?php echo FOOTER_COMPANY; ?>" class="footer-logo">
                 <p>Premium B2B platform for retail distribution and billing.</p>
             </div>
             
