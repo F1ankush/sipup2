@@ -382,7 +382,7 @@ function renderUserNavbar() {
                         </span>
                     <?php endif; ?>
                 </a></li>
-                <li><a href="orders.php">Orders</a></li>
+                <li><a href="my_orders.php">My Orders</a></li>
                 <li><a href="bills.php">Bills</a></li>
                 <li class="navbar-button-item"><a href="logout.php" class="btn btn-secondary btn-capsule">Logout</a></li>
             <?php else: ?>

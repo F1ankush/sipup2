@@ -139,11 +139,11 @@ foreach ($cart as $item) {
                             </div>
                         </div>
 
-                        <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-                            <a href="checkout.php" class="btn btn-primary btn-block" style="text-align: center; text-decoration: none;">
-                                Proceed to Checkout
+                        <div style="display: flex; flex-direction: column; gap: 0.8rem;">
+                            <a href="checkout.php" class="btn btn-primary btn-block" style="text-align: center; text-decoration: none; padding: 1rem; font-size: 1.1rem; font-weight: bold; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none; cursor: pointer;">
+                                ✓ PROCEED TO CHECKOUT
                             </a>
-                            <a href="dashboard.php" class="btn btn-secondary btn-block" style="text-align: center; text-decoration: none;">
+                            <a href="dashboard.php" class="btn btn-secondary btn-block" style="text-align: center; text-decoration: none; padding: 0.8rem;">
                                 Continue Shopping
                             </a>
                         </div>
@@ -151,6 +151,10 @@ foreach ($cart as $item) {
                         <button type="button" class="btn btn-link" style="width: 100%; margin-top: 1rem; color: var(--danger-color);" onclick="if(confirm('Are you sure you want to clear your cart?')) clearCart();">
                             Clear Cart
                         </button>
+
+                        <a href="checkout_guide.php" style="display: block; text-align: center; margin-top: 1rem; color: var(--primary-color); text-decoration: none; font-size: 0.9rem; font-weight: 500;">
+                            📖 View Checkout Guide
+                        </a>
                     </div>
                 </div>
             </div>
